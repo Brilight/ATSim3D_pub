@@ -1,0 +1,14 @@
+Layer,Main_compo,Thickness (m),FloorplanFile,PowerFile,Clip_num_x,Clip_num_y,Clip_num_z
+0,Diel,5e-06,../Mono3D/flp_files/Mono3D_diel_flp.csv,,4,4,1
+1,Metal7_8,18e-07,../Mono3D/flp_files/Mono3D_metal7_8_flp.csv,,4,4,2
+2,Diel,15e-07,../Mono3D/flp_files/Mono3D_diel_flp.csv,,4,4,1
+3,Metal,15e-07,../Mono3D/flp_files/Mono3D_metal_flp.csv,,4,4,2
+4,Diel,8.5e-08,../Mono3D/flp_files/Mono3D_diel_flp.csv,,4,4,1
+5,Si,8.5e-08,../Mono3D/flp_files/Mono3D_poly_flp.csv,,4,4,2
+6,Si,5e-07,../Mono3D/flp_files/Mono3D_tier1_flp.csv,../Mono3D/power_files/Mono3D_tier1_power.csv,8,8,3
+7,Diel,3e-07,../Mono3D/flp_files/Mono3D_diel_flp.csv,,4,4,1
+8,Metal,3e-07,../Mono3D/flp_files/Mono3D_metal_flp.csv,,4,4,2
+9,Si,1e-07,../Mono3D/flp_files/Mono3D_poly_flp.csv,,4,4,2
+10,Diel,8.5e-08,../Mono3D/flp_files/Mono3D_diel_flp.csv,,4,4,1
+11,Si,5e-07,../Mono3D/flp_files/Mono3D_tier0_flp.csv,../Mono3D/power_files/Mono3D_tier0_power.csv,8,8,3
+12,Si,7.6e-05,../Mono3D/flp_files/Mono3D_poly_flp.csv,,4,4,2

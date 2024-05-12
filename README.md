@@ -45,11 +45,11 @@ python ATSim3D.py --lcfFile ../2DIC/Intel_ID1_lcf.csv --ConfigFile ../2DIC/Intel
 
 2. [Mono3D]
 
-python ATSimCore.py --lcfFile ../TSV3D/TSV3D_lcf.csv --ConfigFile ../TSV3D/TSV3D.config --SimParamsFile ../TSV3D/SimParms.config
+python ATSim3D.py --lcfFile ../Mono3D/Mono3D_lcf.csv --ConfigFile ../Mono3D/Mono3D.config --SimParamsFile ../Mono3D/SimParms.config
 
 3. [TSV3D]
 
-python ATSimCore.py --lcfFile ../TSV3D/TSV3D_lcf.csv --ConfigFile ../TSV3D/TSV3D.config --SimParamsFile ../TSV3D/SimParms.config
+python ATSim3D.py --lcfFile ../TSV3D/TSV3D_lcf.csv --ConfigFile ../TSV3D/TSV3D.config --SimParamsFile ../TSV3D/SimParms.config
 
 The .py file can be exported from the jupyter notebook file. 
 

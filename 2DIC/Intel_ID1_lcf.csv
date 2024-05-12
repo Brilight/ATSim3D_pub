@@ -1,3 +1,3 @@
 Layer,Main_compo,Thickness (m),FloorplanFile,PowerFile,Clip_num_x,Clip_num_y,Clip_num_z
-0,Si,7.5e-7,../2DIC/Inteli7_flp.csv,../2DIC/Intel_ft_5core_power.csv,8,8,3
+0,Si,7.5e-7,../2DIC/Inteli7_flp.csv,../2DIC/Intel_ft_5core_power.csv,16,16,3
 1,Si,1e-4,../2DIC/Inteli7_sub.csv,,4,4,1

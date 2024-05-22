@@ -51,8 +51,4 @@ python ATSim3D.py --lcfFile ../Mono3D/Mono3D_lcf.csv --ConfigFile ../Mono3D/Mono
 
 python ATSim3D.py --lcfFile ../TSV3D/TSV3D_lcf.csv --ConfigFile ../TSV3D/TSV3D.config --SimParamsFile ../TSV3D/SimParms.config
 
-The .py file can be exported from the jupyter notebook file. 
-
-We provide the running code for DeePEB_v1 only, while the source code of the other learning-based methods can be generated in the same manner.
-
     

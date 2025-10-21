@@ -1,6 +1,6 @@
-# ATSim3D_pub
+# ATSim_pub
 
-## Public executable files and test cases of ATSim3D [publised at ISEDA24]
+## Public executable files and test cases of ATSim [publised paper at ISEDA24, ISEDA 25, ASICON 25]
 
 ### Intro: 
 
@@ -35,7 +35,7 @@ Detailed algorithms and details can be found in our paper, which can be cited as
    
 ### Usage
 
-General:
+v1 General:
 
 python ATSim3D.py --lcfFile /path/to/lcf_file --ConfigFile /path/to/config_file --SimParamsFile /path/to/simulator_file
 
@@ -65,3 +65,14 @@ python ATSim3D.py --lcfFile ../TSV3D/TSV3D_lcf.csv --ConfigFile ../TSV3D/TSV3D.c
     **Description**
     The TSV-based 3D-IC structure with two active layers interconnected by a TSV array, the shape of which in flp_files/TSV_flp.csv.
     
+v2 :
+
+Binary Download from 
+
+https://disk.pku.edu.cn/link/AAAF77D1F3BA234AF5BD049F6AE5D02843
+Name: ATSim3_5D
+Expires: Never
+
+Usage:
+
+./ATSim3_5D -xml <XmlFile> -config <ConfigFile> --output_path

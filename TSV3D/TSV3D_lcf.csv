@@ -1,0 +1,10 @@
+Layer,Main_compo,Thickness (m),FloorplanFile,PowerFile,Clip_num_x,Clip_num_y,Clip_num_z
+0,Diel,2e-06,../TSV3D/flp_files/TSV3D_diel_flp.csv,,8,8,2
+1,BEOL,12e-06,../TSV3D/flp_files/TSV3D_beol_flp.csv,,8,8,2
+2,Si,5e-07,../TSV3D/flp_files/TSV3D_tier1_flp.csv,../TSV3D/power_files/TSV3D_tier1_power.csv,16,16,2
+3,Si,5e-05,../TSV3D/flp_files/TSV3D_sub_flp.csv,,4,4,2
+4,TIM,2e-05,../TSV3D/flp_files/TSV3D_tim_flp.csv,,8,8,2
+5,Diel,2e-06,../TSV3D/flp_files/TSV3D_diel_flp.csv,,8,8,2
+6,BEOL,12e-6,../TSV3D/flp_files/TSV3D_beol_flp.csv,,8,8,2
+7,Si,5e-07,../TSV3D/flp_files/TSV3D_tier0_flp.csv,../TSV3D/power_files/TSV3D_tier0_power.csv,16,16,2
+8,Si,8e-05,../TSV3D/flp_files/TSV3D_sub_flp.csv,,4,4,2

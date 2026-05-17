@@ -1,213 +1,334 @@
 # ATSim 2.0
 
-## Public executable files and test cases of ATSim 2.0 [publised paper at ISEDA25, ASICON 25]
+Public executable files and test cases for ATSim 2.0.
 
-## 目录
-1. [项目概述](#项目概述)  
-2. [快速入门指南](#快速入门指南)  
-3. [配置文件详解](#配置文件详解)  
-4. [功能特性](#功能特性)  
-5. [示例](#示例)  
-6. [使用注意](#使用注意)
+ATSim 2.0 is associated with papers published at ISEDA 2025 and ASICON 2025.
 
----
+## Table of Contents
 
-## 项目概述
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Input Files](#input-files)
+- [Output Files](#output-files)
+- [Command-Line Usage](#command-line-usage)
+- [Configuration Reference](#configuration-reference)
+- [Features](#features)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
+- [Contact](#contact)
 
-ATSim 是由北京大学自主研发的三维集成电路热仿真引擎，拥有完全自主知识产权，相关技术已发表于多个国际期刊并申请多项国家发明专利。该工具面向先进封装与高性能计算领域，致力于提供高精度、高效率的芯片-封装协同热分析能力。
+## Overview
 
-初代算法采用粗-细双层网格策略，在全局粗网格上快速求解温度场，再在局部热点区域进行精细化求解；现版本引入多尺度自适应网格技术，可对从芯片晶体管级到封装散热器的整体系统进行多层次建模，在保证物理精度的同时显著提升计算效率。
+ATSim is a thermal simulation engine for three-dimensional integrated circuits
+developed by Peking University. The tool targets advanced packaging and
+high-performance computing systems, and provides chip-package co-analysis with
+high accuracy and high computational efficiency.
 
-### 主要特性
+The first-generation algorithm used a coarse-fine two-level grid strategy: a
+global coarse grid was solved first, followed by local refinement around hotspot
+regions. ATSim 2.0 introduces multiscale adaptive meshing, enabling hierarchical
+modeling from transistor-level chip structures to package-level heat spreaders
+and heatsinks while preserving physical fidelity and improving runtime.
 
-- **多尺度求解策略**：支持自适应网格划分，兼顾计算速度与精度。 
-- **稳态与瞬态分析**：可模拟恒定功耗或随时间变化的动态热行为。
-- **复杂封装结构支持**：覆盖 2D-IC、2.5D-IC、MCM、3D-IC、3.5D-IC 等主流先进封装形式。   
-- **灵活的功耗建模**：支持常数、查表、线性、指数等多种功耗模型，并可耦合温度反馈。
-- **模块化输入架构**：通过 XML 统一组织几何、材料、功耗、布局等信息，便于复用与扩展和通过外部脚本进行自动化批量仿真。
+### Highlights
 
----
+- **Multiscale thermal solving**: adaptive meshing balances simulation speed and
+  accuracy across heterogeneous package structures.
+- **Steady-state and transient analysis**: supports constant-power simulations
+  and time-varying thermal behavior.
+- **Advanced packaging support**: models 2D-IC, 2.5D-IC, MCM, 3D-IC, 3.5D-IC,
+  and related integration styles.
+- **Flexible power modeling**: supports constant, lookup-table, linear, and
+  exponential power models, with optional temperature feedback.
+- **Modular input structure**: XML-based package descriptions organize geometry,
+  materials, power, floorplans, and reusable simulation assets.
 
-## 快速入门指南
+## Quick Start
 
-### 推荐系统
+### Recommended Platform
 
-推荐在Ubuntu20.04系统上运行。
+ATSim 2.0 is recommended for Ubuntu 20.04.
 
-### 输入文件准备
+### Basic Workflow
 
-ATSim 的仿真流程依赖四类核心输入文件：
+1. Prepare the package XML file, simulation configuration, material library,
+   floorplan CSV files, power model YAML file, and power trace CSV files.
+2. Run the ATSim executable:
 
-#### 1. 几何结构文件（.xml 文件）
+   ```bash
+   ./bin/ATSim -xml cases/3DIC/3DIC.xml -config cases/3DIC/steady.config --output_path ./rst --plot_flag 1
+   ```
 
-XML 文件是核心输入文件，描述从芯片有源层到外部散热器的完整堆叠结构。每个 `<Component>` 可代表一个物理实体（如芯片、TIM、散热片），而 `<Layer>` 则定义其内部材料层。对于有源组件（`type="Active"`），可包含多个功能层，每层均可独立指定布局 `floorplan` 和功耗 `power` 文件；还可嵌套若干 `<Chiplet>` 子组件，以灵活描述 2.5D/3D 混合结构。
+3. Check the output directory for raw temperature data and optional plots.
 
-例如，一个典型 3D 芯片组件可能包含底部有源层、中间互连层、顶部有源层及硅基底等，各层可分别关联不同的布局和功耗文件。
+## Input Files
 
-#### 2. 材料配置文件（.config 文件）
+ATSim simulations are driven by five major input file types.
 
-材料属性通过 `.config` 格式文件定义，每个材料块需包含导热系数 `conductivity`、体积热容 `volumetric_capacity` 等关键参数。材料名称必须与 XML 文件中 `FillingMaterial` 字段严格一致。
+### 1. Package Geometry XML
 
-#### 3. 功耗文件（.yml + .csv 文件）
+The XML file is the primary input file. It describes the full package stack from
+chip active layers to external thermal structures.
 
-- **powerLib.yml**：定义功耗源模型。每个 `sourceX` 可包含 `internal`、`switch`、`leakage` 三类功耗，支持 常数 `constant`，线性 `linear`，指数 `exp`，和温度查找表 `lookup_table` 形式。功耗模型文件可缺省。
-- **powertrace_*.csv**：指定每个功能单元（macro）所使用的功耗源。功耗 CSV 文件的列名（即单元名称）必须出现在对应的布局 CSV 文件中，且所引用的 `sourceX` 必须在 YAML 文件中定义。未在 CSV 文件中出现的单元默认无功耗。
+- `<Package>` is the root node and defines the package name and unit. The unit
+  must be meters.
+- `<MaterialLib>` and `<PowerLib>` reference the material configuration file and
+  power model library.
+- `<Location>` defines package-level translation and rotation. The current
+  version supports `R0`.
+- `<Component>` represents a physical entity such as a chip, TIM, heatsink, or
+  passive block.
+- `<Layer>` defines material layers inside a component.
+- `<Chiplet>` describes nested chiplets inside an active component.
 
-#### 4. 布局文件（.csv 文件）
+For active components (`type="Active"`), each functional layer may reference its
+own floorplan and power files through `<Floorplan>` and `<Power>` tags. This
+allows heterogeneous 2.5D and 3D package structures to be described in a single
+XML hierarchy.
 
-- **flooplan_*.csv**: 指定每个单元的位置和尺寸，还可单独指定每个单元的材料。
+`<Geometry>` defines component length and width, while layer `<Geometry>` defines
+thickness. `<XYOrigin>` defines the component origin. For active components, the
+origin should be `XYOrigin`. For other components, the origin can be an absolute
+coordinate `(X,Y)` or `Center`, which aligns the component with the active
+component center.
 
-#### 4. 仿真配置文件（.config 文件）
+Filling materials can be defined at the `<Component>`, `<Chiplet>`, `<Layer>`,
+and floorplan levels. Inner definitions have higher priority and override outer
+definitions.
 
-用于控制网格密度、并行核数、求解模式等。
+### 2. Material Configuration
 
-### 输出文件
+Material properties are defined in `.config` files. Each material block should
+include key thermal parameters such as:
 
-#### 1.温度场文件（.npy文件）
+- `conductivity`
+- `volumetric_capacity`
 
-在输出路径下的 `raw` 文件夹下存放着原始仿真结果，包含7列，依次为 `xmin, xmax, ymin, yman, zmin, zmax, temperature`，前6列为某一网格几何位置，最后一列为该网格中心节点处的温度值。如果为瞬态仿真，则存储每个时间步的结果。
+Material names must exactly match the `FillingMaterial` values used in the XML
+file.
 
-#### 2.可视化结果（.png/.gif文件）
+The current material format supports nonlinear materials and orthotropic
+anisotropic materials.
 
-如果开启了可视化选项 `--plot_flag 1`，那么会自动生成可视化结果，包含有功耗层的功耗和温度分布。如果为瞬态仿真，则输出gif。更多可视化内容，将于近期在GUI版本中推出。
+### 3. Power Model YAML
 
-### 命令行调用方式
+The power model YAML file defines reusable power sources such as `source1`,
+`source2`, and so on. Each source may contain three power components:
 
-`ATSim` 通过命令行启动，基本语法如下：
+- `internal`: static internal power.
+- `switch`: dynamic switching power.
+- `leakage`: leakage power, which can be constant, linear, exponential, or a
+  temperature lookup table such as `[45C, 2W]` and `[85C, 4W]`.
 
-```bash
-path_to_ATSim -xml <封装定义.xml> -config <求解配置.config>
+When `power_type` is set to `util` in the simulation configuration, the power CSV
+defines the utilization of each source. Total power is evaluated as:
+
+```text
+internal + switch * utilization + leakage(temperature)
 ```
 
-- 如需指定输出文件夹，使用 `--output_path <输出路径>` 参数，缺省值为当前文件夹。
-- 如需画图，使用 `--plot_flag 1` 参数。
-- 材料配置文件（.config 文件）和功耗模型文件（.yml 文件）由 XML 内部的标签引用，无需额外传参。
+When `power_type` is set to `value`, or when no power model YAML is provided,
+the power CSV directly defines the power value for each source.
 
-### 示例运行流程
+### 4. Power Trace CSV
 
-1. 准备好输入文件（design.xml，sim.config，material.config，flp.csv，powerlib.yaml，power.csv）
-2. 执行命令：
-   ```bash
-   path_to_ATSim -xml design.xml -config sim.config --output_path ./rst --plot_flag 1
-   ```
-3. 查看输出目录获取温度场结果。
+Power trace CSV files map floorplan macros to power sources or direct power
+values.
 
----
+- Each column corresponds to a macro or power source entry.
+- Each row corresponds to one time step.
+- For steady-state simulations, only the first row is used.
+- Macro names referenced by the power CSV must exist in the corresponding
+  floorplan CSV.
+- Sources referenced by the power CSV must be defined in the YAML power library
+  when a power library is used.
+- Macros not listed in the power CSV are treated as having no heat source.
 
-## 配置文件详解
+### 5. Floorplan CSV
 
-### XML 封装定义规范
+Floorplan CSV files define the position, size, and optional material label of
+each macro.
 
-XML 是 ATSim 的核心输入文件，采用层次化嵌套的方式定义几何结构：
+Expected columns include:
 
-- `<Package>`：根节点，定义封装名称与单位（必须为米）。
-- `<MaterialLib>` / `<PowerLib>`：分别引用材料库、功耗库的路径。
-- `<Location>`：支持整体偏移与旋转（当前仅支持 R0）。
-- `<Component>`：每个组件可为 Bulk（无源块）、Active（有源芯片）、Sink（散热器）。
-  - 每个组件均可包含多个 `<Layer>`。
-  - Active 类型组件可包含若干子组件 `<Chiplet>`。
-  - 若某 `<Layer>` 需建模内部功能单元，需添加 `<Floorplan>` 和 `<Power>` 子标签。
-  - `<Component>` 通过 `<Geometry>` 标签定义长宽，通过 `<XYOrigin>` 标签定义原点。Active 类型组件的 `<XYOrigin>` 需定义为 `XYOrigin`。其他类型组件的 `<XYOrigin>` 可定义为绝对位置 `(X,Y)` 或者 `Center`，表示和 Active 组件中心对齐。`<Layer>` 通过 `<Geometry>` 标签定义高度。`<Chiplet>` 子组件通过 `<XYOrigin>` 标签定义在父组件中的相对原点。
-  - `<Component>`，`<Chiplet>`，`<Layer>`，以及 FLP 文件内部都可以定义填充材料。内部层级后定义的材料优先级最高，会覆盖外部层级先定义的材料。
+```text
+UnitName, X, Y, Z, Length, Width, Thickness, Label
+```
 
-### 材料配置 .config 文件规范
+The fields represent the macro name, lower-left coordinate, dimensions, and
+material label. `Thickness` and `Label` may be omitted when they are provided by
+the enclosing XML/layer definition.
 
-- 支持非线性材料。
-- 支持正交各向异性材料。
+Macro names must be unique across different floorplan CSV files. TSV
+distributions can also be defined in floorplan files; see the included examples
+for details.
 
-### 仿真配置 .config文件规范
+### 6. Simulation Configuration
 
-- 略，详见示例。
-- 当前版本瞬态仿真模式不支持非线性材料。
+Simulation `.config` files control mesh density, parallelism, solving mode, and
+other runtime parameters. See the example cases for practical settings.
 
-### 功耗模型 .yml 文件规范
+Note: transient simulation currently does not support nonlinear materials.
 
-YAML 文件结构自由，顶层可直接列出 `source1`, `source2`, ... 等功耗源。每个源包含三种功耗分量：
+## Output Files
 
-- `internal`：静态内部功耗。
-- `switch`：动态开关功耗。
-- `leakage`：漏电功耗，可设为常数、线性、指数、温度查表（如 [45°C, 2W], [85°C, 4W]）。
+### Raw Temperature Field
 
-- 如果配置文件中的 `power_type` 参数设置为 `util`，那么功耗 CSV 文件中定义每个源的 `utilization`，总功耗为 `internal + switch*utilization + leakage(temperature)`。
-- 如果配置文件中的 `power_type` 参数设置为 `value` 或者功耗模型文件缺省，那么功耗 CSV 文件中定义每个源的实际功耗值`value`，总功耗为 `value`。
+Raw simulation results are written under the `raw` folder in the output path.
+Each result contains seven columns:
 
-### 功耗 CSV 文件规范
+```text
+xmin, xmax, ymin, ymax, zmin, zmax, temperature
+```
 
-- CSV 文件中每一列包含一个功耗源。
-- 每一行表示一个时间步内的功耗，若仿真模式为稳态仿真，则只取第一行的功耗值。
+The first six columns define the grid-cell geometry. The final column is the
+temperature at the center node of that grid cell. For transient simulations,
+results are stored for each time step.
 
-### 布局 CSV规范
+### Visualization Files
 
-- CSV 文件中每一行包含一个 macro。
-- 列名包含 `UnitName, X, Y, Z, Length, Width, Thickness, Label`，含义依次为 macro 名称，左下角坐标，尺寸，材料。
-- 厚度和材料可缺省。
-- 不同 CSV 文件中的 macro 名不能重复。
-- 除 macro 外，还可定义 TSV 分布，详见示例。
+When plotting is enabled with `--plot_flag 1`, ATSim automatically generates
+visualization files for power and temperature distributions on powered layers.
+Steady-state simulations generate image files, while transient simulations can
+generate animated GIF files.
 
-### FLP 与 Power CSV 关联机制
+More visualization capabilities will be provided in a future GUI version.
 
-- 布局文件（CSV）定义每层内各 macro 的位置、尺寸。
-- 功耗文件（CSV）文件列出哪些 macro 有功耗，并指定其对应的 `sourceX`。
-- 两者通过 macro 名称匹配，未在功耗文件中出现的 macro 默认无热源。
+## Command-Line Usage
 
----
+ATSim is launched from the command line:
 
-## 功能特性
+```bash
+./bin/ATSim -xml <package_definition.xml> -config <simulation_config.config>
+```
 
-### 灵活几何结构定义
+Common options:
 
-支持2D，2.5D，3D，3.5D结构，几何定义灵活。
+- `--output_path <path>`: output directory. The default is the current working
+  directory.
+- `--plot_flag 1`: enable visualization output.
 
-### 灵活的材料定义
+Material `.config` files and power model `.yml` files are referenced from the XML
+file and do not need to be passed as separate command-line arguments.
 
-支持非线性材料和各向异性材料。
+Example:
 
-### 灵活的功耗模型
+```bash
+./bin/ATSim -xml cases/3DIC/3DIC.xml -config cases/3DIC/steady.config --output_path ./rst --plot_flag 1
+```
 
-支持包括常数、线性、指数、查找表在内的功耗模型，可为每个热源单独指定。
+## Configuration Reference
 
-### 多尺度网格求解
+### XML Package Definition
 
-采用自适应网格技术，在热梯度大、材料变化剧烈的区域自动加密网格，兼顾效率与精度。
+The package XML uses a hierarchical structure to describe geometry, materials,
+floorplans, and power bindings.
 
-### TSV 建模支持
+Important rules:
 
-支持 TSV 结构建模，可精确反映其高导热特性对热传导路径的影响。
+- The root `<Package>` unit must be meters.
+- `<MaterialLib>` and `<PowerLib>` paths are resolved from the simulation working
+  directory unless absolute paths are used.
+- Each `<Component>` can contain multiple `<Layer>` elements.
+- Active components can contain nested `<Chiplet>` components.
+- A layer that contains functional macros should define both `<Floorplan>` and
+  `<Power>` tags.
+- Material definitions closer to the macro level override outer definitions.
 
-### 瞬态热分析
+### Material Configuration
 
-支持时间域仿真，可导入随时间变化的功耗序列，观察温度动态响应过程。
+Material configuration files support:
 
----
+- temperature-dependent nonlinear materials
+- orthotropic anisotropic thermal conductivity
+- reusable material blocks referenced by XML names
 
-## 示例
+### Power and Floorplan Binding
 
-### 1. 多层堆叠 3D-IC
+Floorplan CSV files define where macros are located. Power CSV files define
+which macros dissipate power and how much power they dissipate. ATSim matches
+the two files by macro name.
 
-本案例包含上下两个有源层（如 logic + cache），通过hybrid bonding互连。每层使用独立 floorplan 与功耗文件。本案例可测试非线性材料、非线性功耗、稳态仿真和瞬态仿真等功能。
+If a macro exists in the floorplan but not in the power CSV, it is treated as an
+unpowered region.
 
-### 2. GPU-HBM 封装
+## Features
 
-基于 NVIDIA V100 架构简化模型，包含一个 compute die 与 多个 HBM，compute die 和 HBM 的厚度分布不同，是3.5D封装结构。通过 XML 定义多芯片布局，利用独立 FLP 文件分配不同功耗。
+### Flexible Geometry Definition
 
----
+ATSim supports 2D, 2.5D, 3D, and 3.5D package structures through a flexible XML
+description.
 
-## 使用注意
+### Flexible Material Definition
 
-### 常见错误与解决方法
+The material system supports nonlinear and anisotropic materials.
 
-#### Q1: 报错 “File not found” 或路径错误  
-✅ **检查**：检查所有文件路径（FLP、Power、MaterialLib 等），如采用相对路径，应为相对于当前文件夹的路径。
+### Flexible Power Models
 
-#### Q2: 材料名称不匹配  
-✅ **检查**：XML 中 `FillingMaterial="XXX"` 必须在 `.config` 文件中有对应 `[XXX]` 段。
+Power models can be specified independently for each heat source using constant,
+linear, exponential, or lookup-table forms.
 
-#### Q3: 内存溢出或求解卡死  
-✅ **建议**：降低网格粒度，或减少网格自适应划分深度；大型模型建议使用多核并行。
+### Multiscale Adaptive Meshing
 
-#### Q5: 温度结果异常（如全为 环境温度）  
-✅ **排查**：确认 Power CSV 是否正确关联了 FLP 中的单元名；确认 YAML 中功耗值非零。
+Adaptive meshing refines regions with large thermal gradients or abrupt material
+changes, improving accuracy while controlling runtime.
 
-> **注**：本手册基于 ATSim 当前稳定版本编写。如有新功能更新，请参考最新发布说明或联系开发团队获取支持。
+### TSV Modeling
 
----
+TSV structures can be modeled to capture their impact on heat conduction paths.
+
+### Transient Thermal Analysis
+
+Time-domain simulation supports time-varying power traces and can be used to
+study dynamic temperature response.
+
+## Examples
+
+### 1. Multilayer 3D-IC
+
+The `cases/3DIC` example contains two active layers, such as logic and cache,
+connected through hybrid bonding. Each active layer uses its own floorplan and
+power files. This case can be used to test nonlinear materials, nonlinear power
+models, steady-state simulation, and transient simulation.
+
+### 2. GPU-HBM Package
+
+The `cases/GPUHBM` example is a simplified model based on the NVIDIA V100
+architecture. It contains one compute die and multiple HBM stacks. The compute
+die and HBM stacks have different thickness distributions, forming a 3.5D
+package structure. The XML file defines the multi-chip layout, and separate
+floorplan files assign power to different dies.
+
+## Troubleshooting
+
+### File Not Found or Path Errors
+
+Check all file paths, including floorplan, power, material, and power library
+paths. Relative paths should be valid relative to the working directory where
+ATSim is launched.
+
+### Material Name Mismatch
+
+Every `FillingMaterial="..."` value used in the XML file must have a matching
+material block in the `.config` material file.
+
+### Out-of-Memory Errors or Stalled Solves
+
+Reduce mesh density or adaptive refinement depth. For large models, use
+multi-core parallel execution when possible.
+
+### Unexpected Temperature Results
+
+If the temperature field remains near ambient temperature, check that:
+
+- power CSV macro names match floorplan macro names
+- referenced YAML power sources exist
+- power values are nonzero
+- the intended power file is referenced by the XML file
+
+## Contact
+
+For questions, issues, or support, please contact the developers:
+
+- txzhu@pku.edu.cn
+- qpwang@pku.edu.cn

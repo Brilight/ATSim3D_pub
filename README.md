@@ -64,15 +64,3 @@ python ATSim3D.py --lcfFile ../TSV3D/TSV3D_lcf.csv --ConfigFile ../TSV3D/TSV3D.c
 
     **Description**
     The TSV-based 3D-IC structure with two active layers interconnected by a TSV array, the shape of which in flp_files/TSV_flp.csv.
-    
-v2 :
-
-Binary Download from 
-
-https://disk.pku.edu.cn/link/AAAF77D1F3BA234AF5BD049F6AE5D02843
-Name: ATSim3_5D
-Expires: Never
-
-Usage:
-
-./ATSim3_5D -xml <XmlFile> -config <ConfigFile> --output_path

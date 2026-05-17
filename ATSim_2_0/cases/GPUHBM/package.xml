@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package name="GPUHBMSYSTEM" lengthunit="m">
+    <Location offsetX="0" offsetY="0" orientation="R0"/>
+    <MaterialLib File="./material.config"/>
+    <Component number="1" type="Substrate">
+        <Geometry Length="0.060" Width="0.060" XYorigin="Center"/>
+        <Layer name="SUBSTRATE" FillingMaterial="Substrate">
+            <Geometry Thickness="300e-6"/>
+        </Layer>
+    </Component>
+    <Component number="1" type="Interposer">
+        <Geometry Length="0.044" Width="0.038" XYorigin="Center"/>
+        <Layer name="INTERPOSER" FillingMaterial="Si" MaxDepth="5">
+            <Geometry Thickness="100e-6"/>
+            <Floorplan Type="TSV" File="./flp/TSV_flp.csv"/>
+        </Layer>
+    </Component>
+    <Component number="2" type="Active" FillingMaterial="Epoxy">
+        <Geometry Length="0.044" Width="0.038" XYorigin="Origin"/>
+        <Chiplet name="GPU" FillingMaterial="Si">
+            <Geometry Length="25.5e-3" Width="32e-3" XYorigin="(0.00925,0.003)"/>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/GPU_flp.csv"/>
+                <Power File="./power/GPU_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="650e-6"/>
+            </Layer>
+        </Chiplet>
+        <Chiplet name="HBM1" FillingMaterial="Si">
+            <Geometry Length="7.56e-3" Width="11.49e-3" XYorigin="(0.0015,0.003)"/>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM1_bot_flp.csv"/>
+                <Power File="./power/HBM1_bot_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM1_top_flp.csv"/>
+                <Power File="./power/HBM1_top_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+        </Chiplet>
+        <Chiplet name="HBM2" FillingMaterial="Si">
+            <Geometry Length="7.56e-3" Width="11.49e-3" XYorigin="(0.03494,0.003)"/>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM2_bot_flp.csv"/>
+                <Power File="./power/HBM2_bot_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM2_top_flp.csv"/>
+                <Power File="./power/HBM2_top_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+        </Chiplet>
+        <Chiplet name="HBM3" FillingMaterial="Si">
+            <Geometry Length="7.56e-3" Width="11.49e-3" XYorigin="(0.0015,0.02351)"/>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM3_bot_flp.csv"/>
+                <Power File="./power/HBM3_bot_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM3_top_flp.csv"/>
+                <Power File="./power/HBM3_top_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+        </Chiplet>
+        <Chiplet name="HBM4" FillingMaterial="Si">
+            <Geometry Length="7.56e-3" Width="11.49e-3" XYorigin="(0.03494,0.02351)"/>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM4_bot_flp.csv"/>
+                <Power File="./power/HBM4_bot_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+            <Layer name="FEOL">
+                <Geometry Thickness="1e-6"/>
+                <Floorplan Type="Macro" File="./flp/HBM4_top_flp.csv"/>
+                <Power File="./power/HBM4_top_power.csv" />
+            </Layer>
+            <Layer name="DIE">
+                <Geometry Thickness="300e-6"/>
+            </Layer>
+        </Chiplet>
+    </Component>
+    <Component number="3" type="Bulk">
+        <Geometry Length="0.044" Width="0.038" XYorigin="Center"/>
+        <Layer name="TIM1" FillingMaterial="TIM1">
+            <Geometry Thickness="100e-6"/>
+        </Layer>
+    </Component>
+    <Component number="4" type="Sink" sinktype="spreader">
+        <Geometry Length="60e-3" Width="60e-3" XYorigin="Center"/>
+        <Layer name="HEATSPREADER" FillingMaterial="Cu">
+            <Geometry Thickness="1e-3"/>
+        </Layer>
+    </Component>
+    <Component number="5" type="Sink" sinktype="nopackage">
+        <Geometry Length="80e-3" Width="80e-3" XYorigin="Center"/>
+        <Layer name="HEATSINK" FillingMaterial="Cu">
+            <Geometry Thickness="3e-3"/>
+        </Layer>
+    </Component>
+</Package>

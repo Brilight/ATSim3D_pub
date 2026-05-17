@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package name="3D" lengthunit="m">
+    <MaterialLib File="./material.config"/>
+    <PowerLib File="./power/powerlib.yml"/>
+    <Location offsetX="0" offsetY="0" orientation="R0"/>
+    <Component number="0" type="Bulk">
+        <Geometry Length="0.02" Width="0.02" XYorigin="Center"/>
+        <Layer name="Substrate" FillingMaterial="Substrate">
+            <Geometry Thickness="300e-6"/>
+        </Layer>
+    </Component>
+    <Component number="1" type="Active" FillingMaterial="EMC">
+        <Geometry Length="0.02" Width="0.02" XYorigin="Origin"/>
+        <Layer name="Bump" FillingMaterial="Bump">
+            <Geometry Thickness="100e-6"/>
+        </Layer>
+        <Layer name="active_bot" FillingMaterial="FEOL">
+            <Geometry Thickness="10e-6"/>
+            <Floorplan Type="Macro" File="./floorplan/flp_bot.csv"/>
+            <Power File="./power/powertrace_bot.csv" />
+        </Layer>
+        <Layer name="HB" FillingMaterial="HB">
+            <Geometry Thickness="50e-6"/>
+        </Layer>
+        <Layer name="active_top" FillingMaterial="FEOL">
+            <Geometry Thickness="10e-6"/>
+            <Floorplan Type="Macro" File="./floorplan/flp_top.csv"/>
+            <Power File="./power/powertrace_top.csv" />
+        </Layer>
+        <Layer name="Die" FillingMaterial="Si">
+            <Geometry Thickness="500e-6"/>
+        </Layer>
+    </Component>
+    <Component number="2" type="Bulk">
+        <Geometry Length="0.02" Width="0.02" XYorigin="Center"/>
+        <Layer name="TIM1" FillingMaterial="TIM1">
+            <Geometry Thickness="50e-6"/>
+        </Layer>
+    </Component>
+    <Component number="3" type="Sink" sinktype="spreader">
+        <Geometry Length="0.04" Width="0.04" XYorigin="Center"/>
+        <Layer name="IHS" FillingMaterial="Cu">
+            <Geometry Thickness="0.003" />
+        </Layer>
+        <Layer name="TIM2" FillingMaterial="TIM2">
+            <Geometry Thickness="200e-6" />
+        </Layer>
+    </Component>
+    <Component number="4" type="Sink" sinktype="nopackage">
+        <Geometry Length="0.06" Width="0.06" XYorigin="Center"/>
+        <Layer name="Heatsink" FillingMaterial="Cu">
+            <Geometry Thickness="0.003" />
+        </Layer>
+    </Component>
+</Package>

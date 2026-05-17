@@ -1,0 +1,113 @@
+Description:
+  power_unit: W
+  temperature_unit: K
+  # temperature_unit: C
+  power_type: internal/switch/leakage 
+  data_type: constant/lookup_table/linear/exp
+  # constant: p
+  # lookup_table: - [T, p]
+  # linear: k, b (k*T+b)
+  # exp: pbase tbase gamma (pbase*exp(gamma*(t-tbase)))
+  # total_power = util * switch + internal + leakage (power_type=util)
+
+cells:
+  source1:
+    internal:
+      type: constant
+      data: 10
+    switch:
+      type: constant
+      data: 10
+    leakage:
+      type: exp
+      data: 2 353.15 0.05
+      
+  source2:
+    internal:
+      type: constant
+      data: 20
+    switch:
+      type: constant
+      data: 20
+    leakage:
+      type: lookup_table
+      data:
+        - [318.15, 2.0]
+        - [358.15, 3.0]
+        - [398.15, 3.5]
+      
+  source3:
+    internal:
+      type: constant
+      data: 10
+    switch:
+      type: constant
+      data: 10
+    leakage:
+      type: exp
+      data: 2 353.15 0.05
+      
+  source4:
+    internal:
+      type: constant
+      data: 20
+    switch:
+      type: constant
+      data: 20
+    leakage:
+      type: lookup_table
+      data:
+        - [318.15, 2.0]
+        - [358.15, 3.0]
+        - [398.15, 3.5]
+      
+  source5:
+    internal:
+      type: constant
+      data: 5
+    switch:
+      type: constant
+      data: 5
+    leakage:
+      type: linear
+      data: 0.1 -33.3
+      
+  source6:
+    internal:
+      type: constant
+      data: 15
+    switch:
+      type: constant
+      data: 15
+    leakage:
+      type: lookup_table
+      data:
+        - [318.15, 2.0]
+        - [358.15, 3.0]
+        - [398.15, 3.5]
+      
+  source7:
+    internal:
+      type: constant
+      data: 5
+    switch:
+      type: constant
+      data: 5
+    leakage:
+      type: linear
+      data: 0.1 -33.3
+      
+  source8:
+    internal:
+      type: constant
+      data: 15
+    switch:
+      type: constant
+      data: 15
+    leakage:
+      type: lookup_table
+      data:
+        - [318.15, 2.0]
+        - [358.15, 3.0]
+        - [398.15, 3.5]
+      

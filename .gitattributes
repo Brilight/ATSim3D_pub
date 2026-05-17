@@ -1,1 +1,1 @@
-ATSim_2_0/bin/ATSim filter=lfs diff=lfs merge=lfs -text
+bin/ATSim filter=lfs diff=lfs merge=lfs -text

@@ -56,7 +56,8 @@ ATSim 2.0 is recommended for Ubuntu 20.04.
 2. Run the ATSim executable:
 
    ```bash
-   ./bin/ATSim -xml cases/3DIC/3DIC.xml -config cases/3DIC/steady.config --output_path ./rst --plot_flag 1
+   cd ./cases/3DIC
+   ../../bin/ATSim -xml ./3DIC.xml -config steady.config --output_path ./steady --plot_flag 1
    ```
 
 3. Check the output directory for raw temperature data and optional plots.

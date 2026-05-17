@@ -1,48 +1,101 @@
-## 介绍
-ATSim 是一款面向2.5D/3D集成电路与芯粒集成系统的热仿真框架，旨在应对现代芯片设计中日益严峻的热管理挑战。随着芯片集成度不断提高，热效应已成为影响性能、功耗和可靠性的关键因素。ATSim通过一系列创新设计，在仿真精度、计算效率和多物理场适配能力方面展现出显著优势。
+# ATSim 2.0 Example Cases
 
-首先，ATSim具备强大的多尺度建模能力。现代芯片系统结构尺度跨度极大，从厘米级的散热器到微米级的TSV和微凸点，传统网格工具难以兼顾细节与效率。ATSim采用基于混合树结构的自适应多级网格生成方法，根据材料属性和功率分布进行局部加密，既保证了对热点区域的精细建模，又避免了全局细网格带来的计算负担，显著提升了仿真效率。
+This directory contains runnable example cases for ATSim 2.0. The examples
+demonstrate steady-state and transient thermal simulations for advanced
+packaging structures.
 
-其次，ATSim支持复杂的材料特性建模。芯片中广泛存在的材料如硅、二氧化硅、环氧树脂等，往往表现出各向异性、非线性和异质性。ATSim通过有限体积法和牛顿迭代法，能够准确处理温度依赖的热导率和各向异性热传导问题。对于异质材料组成的单个网格，ATSim采用等效热导率模型，结合材料占比进行加权平均，确保宏观仿真的准确性。
+## Directory Layout
 
-在仿真能力方面，ATSim支持稳态和瞬态两种分析模式。稳态求解器采用多重网格加速技术，支持线性和非线性问题；瞬态求解器则结合显式和隐式时间积分方法，适应不同时间步长和稳定性需求。此外，ATSim还支持多种边界条件，包括定温、热流、对流和辐射边界，具备良好的通用性。
-
-ATSim的另一大优势在于与EDA工具的无缝集成。它能够直接导入标准设计流程生成的布局和功耗信息，进行高分辨率温度场仿真，并将结果反馈给设计工具，用于温度感知布局优化和功率-热协同仿真。这种闭环设计能力使得热分析能够真正融入早期设计阶段，提升设计质量。
-
-在性能验证方面，ATSim在多组基准测试中表现优异。相较于主流商用工具如ANSYS ICEPAK和COMSOL，ATSim在保持相对误差低于3%的前提下，实现了最高50倍的加速。其在非线性材料、异质结构和多芯粒系统中的仿真精度和效率均优于现有工具。
-
-总之，ATSim凭借其自适应网格生成、复杂材料建模、多模式仿真支持和EDA集成能力，成为2.5D/3D芯片热设计与优化的理想平台。未来，ATSim还将向系统-技术协同优化和热-力多物理场仿真方向扩展，为先进封装和异构集成提供更全面的支持。
-
-## 运行
-1. 进入cases文件夹
+```text
+cases/
+├── 3DIC/       # Two-active-layer 3D-IC example
+└── GPUHBM/     # GPU-HBM package example with a TSV interposer
 ```
+
+## Before Running
+
+Start from the repository root and enter the `cases` directory:
+
+```bash
 cd ./cases
 ```
 
-2. 样例1，3DIC
-两层热源的3DIC样例。
-```
+The commands below assume that `bin/ATSim` is available at the repository root.
+
+## Example 1: 3D-IC
+
+The `3DIC` case models a two-layer 3D integrated circuit with two powered active
+layers. It can be used to test nonlinear steady-state simulation and nonlinear
+transient simulation.
+
+Enter the case directory:
+
+```bash
 cd ./3DIC
 ```
-非线性稳态仿真：
-```
+
+### Nonlinear Steady-State Simulation
+
+```bash
 ../../bin/ATSim -xml ./3DIC.xml -config steady.config --output_path ./steady --plot_flag 1
 ```
-会在当前目录生成steady文件夹，内部有raw文件夹，存储仿真结果steadytemp.npy，以及功耗和温度分布图。
 
-非线性瞬态仿真：
-```
+This command creates a `steady` output directory. The `steady/raw` directory
+contains the raw simulation result, including `steadytemp.npy`. When plotting is
+enabled, ATSim also generates power and temperature distribution figures.
+
+### Nonlinear Transient Simulation
+
+```bash
 ../../bin/ATSim -xml ./3DIC.xml -config transient.config --output_path ./transient --plot_flag 1
 ```
-会在当前目录生成transient文件夹，内部有raw文件夹，存储每步仿真结果res.npy，以及功耗和温度分布动图。
 
-3. 样例2，GPUHBM
-一个GPU-HBM系统的样例，其中interposer带有41*41的TSV阵列。
+This command creates a `transient` output directory. The `transient/raw`
+directory stores per-step simulation results, including `res.npy`. When plotting
+is enabled, ATSim also generates animated power and temperature visualizations.
+
+Return to the `cases` directory before running the next example:
+
+```bash
+cd ..
 ```
-cd .\GPUHBM
+
+## Example 2: GPU-HBM
+
+The `GPUHBM` case models a GPU-HBM system. The interposer includes a `41 x 41`
+TSV array.
+
+Enter the case directory:
+
+```bash
+cd ./GPUHBM
 ```
-非线性稳态仿真：
+
+### Nonlinear Steady-State Simulation
+
+```bash
+../../bin/ATSim -xml ./package.xml -config sim.config --output_path ./steady --plot_flag 1
 ```
-../../bin/ATSim.exe -xml ./package.xml -config sim.config --output_path ./steady --plot_flag 1
-```
-会在当前目录生成steady文件夹，内部有raw文件夹，存储仿真结果steadytemp.npy，以及功耗和温度分布图。
+
+This command creates a `steady` output directory. The `steady/raw` directory
+contains the raw simulation result, including `steadytemp.npy`. When plotting is
+enabled, ATSim also generates power and temperature distribution figures.
+
+## Output Summary
+
+Each example writes results to the directory specified by `--output_path`.
+
+- `raw/`: raw numerical temperature results in NumPy format.
+- image files: generated power and temperature distribution plots when
+  `--plot_flag 1` is enabled.
+- GIF files: generated for transient simulations when visualization is enabled.
+
+## Notes
+
+- Run commands from the corresponding case directory unless otherwise stated.
+- Use Linux-style paths on Ubuntu, for example `../../bin/ATSim`.
+- If an executable permission error occurs, run:
+
+  ```bash
+  chmod +x ../../bin/ATSim
+  ```

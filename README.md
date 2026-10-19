@@ -1,5 +1,7 @@
 # ATSim 2.0
 
+!!!IMPORTANT: This repo is not maintained anymore. The up-to-time update can be found in https://github.com/PKU-IDEA/ATSim_pub.
+
 Public executable files and test cases for ATSim 2.0.
 
 ATSim 2.0 is associated with papers published at ISEDA 2025 and ASICON 2025.
